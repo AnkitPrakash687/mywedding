@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { stringify } from 'csv-stringify';
 
 export default class ExcelService {
-  path = './services/mywedding.csv';
-
+  path = './public/assets/mywedding.csv';
+  
   listGuest = (data) => {
     let result = [];
     return new Promise((resolve, reject) => {
