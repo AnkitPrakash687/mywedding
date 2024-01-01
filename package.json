@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
+    "@supabase/supabase-js": "^2.39.1",
     "csv-parse": "^5.5.3",
     "csv-stringify": "^6.4.5",
     "uuid": "^9.0.1"

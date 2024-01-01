@@ -1,6 +1,16 @@
 <template>
   <v-container>
-    <v-data-table :items="tableData.value"></v-data-table>
+    <v-data-table :items="table.items" :headers="table.headers">
+      <template v-slot:item.action="{ item }">
+        <v-btn
+          icon="mdi-trash-can"
+          color="red"
+          variant="text"
+          @click="handleDeleteItem(item.id)"
+        >
+        </v-btn>
+      </template>
+    </v-data-table>
 
     <v-menu
       v-model="vm.isOpenAddMenu"
@@ -75,38 +85,45 @@ import { ref, reactive } from 'vue';
 
 export default defineComponent({
   async setup() {
-
     const vm = reactive({
-      name: "",
-      phoneNumber: "",
-      email: "",
-      isOpenAddMenu: false
-    })
+      name: '',
+      phoneNumber: '',
+      email: '',
+      isOpenAddMenu: false,
+    });
 
-    const tableData = ref([])
+    const table = ref({ items: [], headers: [] });
+
     const fetchGuestList = async () => {
       const { data } = await useFetch('/api/guest/list');
-      tableData.value = data;
-    }
+      let tableHeaders = [
+        { title: 'ID', key: 'id' },
+        { title: 'Name', key: 'name' },
+        { title: 'Phone Number', key: 'phoneNumber' },
+        { title: 'Email', key: 'email' },
+        {title: "Token", key: "token"}
+      ];
+      table.value.headers = [
+        ...tableHeaders,
+        { title: 'action', key: 'action' },
+      ];
+      console.log(table.value);
+      table.value.items = data.value;
+    };
 
-
-   await fetchGuestList();
-  
-
+    await fetchGuestList();
 
     //const excelService = new ExcelService();
     const handleClickCreate = async () => {
-      console.log(vm);
-      const { data: responseData} = await useFetch('/api/guest/add', {
-        method: "POST",
+      const { data: responseData } = await useFetch('/api/guest/add', {
+        method: 'POST',
         body: {
           name: vm.name,
           phoneNumber: vm.phoneNumber,
-          email: vm.email
-        }
+          email: vm.email,
+        },
       });
       await fetchGuestList();
-      console.log(responseData);
     };
 
     const handleInputName = (e) => {
@@ -123,16 +140,25 @@ export default defineComponent({
       vm.isOpenAddMenu = false;
     };
 
-
+    const handleDeleteItem = async (id) => {
+      const { data: responseData } = await useFetch('/api/guest/delete', {
+        method: 'POST',
+        body: {
+          id: id,
+        },
+      });
+      await fetchGuestList();
+    };
 
     return {
       vm,
-      tableData,
+      table,
       handleClickCreate,
       handleInputName,
       handleCloseMenu,
       handleInputPhoneNumber,
-      handleInputEmail
+      handleInputEmail,
+      handleDeleteItem,
     };
   },
 });
