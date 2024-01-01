@@ -15,7 +15,7 @@ import InvitationVideo from "@/public/assets/invitationVideo.mp4"
 import InvitationGif from "@/public/assets/invitation.gif"
 export default {
     mounted(){
-       // document.getElementById('vid').play();
+       document.getElementById('vid').play();
     },
     methods: {
         handleClickVideo() {
